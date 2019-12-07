@@ -5,18 +5,19 @@ function pozymiai = pozymiai_raidems_atpazinti(pavadinimas, pvz_eiluciu_sk)
 %
 %%
 % Vaizdo su pavyzdþiais nuskaitymas
+%pvz_eiluciu_sk = 10; %debug
 V = imread(pavadinimas);
 figure(12), imshow(V)
 %% Raidþiø iðkirpimas ir sudëliojimas á kintamojo 'objektai' celes
-V_pustonis = rgb2gray(V);
+%V_pustonis = rgb2gray(V);
 % vaizdo keitimo dvejetainiu slenkstinës reikðmës paieðka
-slenkstis = graythresh(V_pustonis);
+%slenkstis = graythresh(V);
 % pustonio vaizdo keitimas dvejetainiu
-V_dvejetainis = im2bw(V_pustonis,slenkstis);
+%V_dvejetainis = im2bw(V,slenkstis);
 % rezultato atvaizdavimas
-figure(1), imshow(V_dvejetainis)
+figure(1), imshow(V)
 % vaizde esanèiø objektø kontûrø paieðka
-V_konturais = edge(uint8(V_dvejetainis));
+V_konturais = edge(uint8(V));
 % rezultato atvaizdavimas
 figure(2),imshow(V_konturais)
 % objektø kontûrø uþpildymas 
@@ -53,12 +54,14 @@ for k = 1:pvz_eiluciu_sk
 end
 % ið dvejetainio vaizdo pagal objektø ribas iðkerpami vaizdo fragmentai
 for k = 1:Skaicius
-    objektai{k} = imcrop(V_dvejetainis,O_ribos(:,O_centras(k,3)));
+    objektai{k} = imcrop(V,O_ribos(:,O_centras(k,3)));
 end
 % vieno ið vaizdo fragmentø atvaizdavimas
 figure(5),
 for k = 1:Skaicius
-   subplot(pvz_eiluciu_sk,raidziu_sk,k), imshow(objektai{k})
+   %Kadangi raidziu skc su naudojamu pvz gali buti atvaizduojamas netinkamai
+   tmp = round(raidziu_sk,0);
+   subplot(pvz_eiluciu_sk,tmp+1,k), imshow(objektai{k})
 end
 % vaizdo fragmentai apkerpami, panaikinant fonà ið kraðtø (pagal staèiakampá)
 
@@ -84,7 +87,8 @@ end
 % vieno ið vaizdo fragmentø atvaizdavimas
 figure(6),
 for k = 1:Skaicius
-   subplot(pvz_eiluciu_sk,raidziu_sk,k), imshow(objektai{k})
+   tmp = round(raidziu_sk,0);
+   subplot(pvz_eiluciu_sk,tmp+1,k), imshow(objektai{k})
 end
 %%
 %% Suvienodiname vaizdo fragmentø dydþius iki 70x50
