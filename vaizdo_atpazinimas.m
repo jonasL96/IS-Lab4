@@ -2,7 +2,7 @@ close all
 clear all
 clc
 %% raidşiø pavyzdşiø nuskaitymas ir poşymiø skaièiavimas
-pavadinimas = 'train_data.png';
+pavadinimas = 'train_data_new.png';
 V = imread(pavadinimas);
 %Pries paduodant funkcijai paveikslelis segmentuojamas
 V_pustonis = rgb2gray(V);
@@ -11,7 +11,7 @@ grey = imread('grey.png');
 BW = segmentImage(grey);
 imwrite(BW,'segmented.png');
 pavadinimas2 = 'segmented.png';
-pozymiai_tinklo_mokymui = pozymiai_raidems_atpazinti(pavadinimas2, 9);
+pozymiai_tinklo_mokymui = pozymiai_raidems_atpazinti(pavadinimas2, 10);
 %% Atpaşintuvo kûrimas
 % poşymiai iğ celiø masyvo perkeliami á matricà
 P = cell2mat(pozymiai_tinklo_mokymui);
@@ -24,7 +24,7 @@ tinklas = newrb(P,T,0,1,10); %pakeista i 10
 
 %% Tinklo patikra
 % skaièiuojamas tinklo iğëjimas neşinomiems poşymiams
-P2 = P(:,1:12);
+P2 = P(:,1:10);
 Y2 = sim(tinklas, P2);
 % ieğkoma, kuriame iğëjime gauta didşiausia reikğmë
 [a2, b2] = max(Y2);
@@ -36,32 +36,32 @@ atsakymas = [];
 for k = 1:raidziu_sk
     switch b2(k)
         case 1
-            atsakymas = [atsakymas, '1'];
-        case 2
-            atsakymas = [atsakymas, '2'];
-        case 3
-            atsakymas = [atsakymas, '3'];
-        case 4
-            atsakymas = [atsakymas, '4'];
-        case 5
-            atsakymas = [atsakymas, '5'];
-        case 6
-            atsakymas = [atsakymas, '6'];
-        case 7
-            atsakymas = [atsakymas, '7'];
-        case 8
-            atsakymas = [atsakymas, '8'];
-        case 9
-            atsakymas = [atsakymas, '9'];
-        case 10
             atsakymas = [atsakymas, '0'];
+        case 2
+            atsakymas = [atsakymas, '1'];
+        case 3
+            atsakymas = [atsakymas, '2'];
+        case 4
+            atsakymas = [atsakymas, '3'];
+        case 5
+            atsakymas = [atsakymas, '4'];
+        case 6
+            atsakymas = [atsakymas, '5'];
+        case 7
+            atsakymas = [atsakymas, '6'];
+        case 8
+            atsakymas = [atsakymas, '7'];
+        case 9
+            atsakymas = [atsakymas, '8'];
+        case 10
+            atsakymas = [atsakymas, '9'];
     end
 end
 % pateikime rezultatà komandiniame lange
 disp(atsakymas)
 figure(7), text(0.1,0.5,atsakymas,'FontSize',38)
-%% Skaiciu "667" poşymiø iğskyrimas 
-pavadinimas = 'test_667.png';
+%% Skaiciu "234" poşymiø iğskyrimas 
+pavadinimas = 'test_27.png';
 V = imread(pavadinimas);
 V_pustonis = rgb2gray(V);
 imwrite(V_pustonis,'grey.png')
@@ -87,32 +87,32 @@ atsakymas = [];
 for k = 1:raidziu_sk
     switch b2(k)
         case 1
-            atsakymas = [atsakymas, '1'];
-        case 2
-            atsakymas = [atsakymas, '2'];
-        case 3
-            atsakymas = [atsakymas, '3'];
-        case 4
-            atsakymas = [atsakymas, '4'];
-        case 5
-            atsakymas = [atsakymas, '5'];
-        case 6
-            atsakymas = [atsakymas, '6'];
-        case 7
-            atsakymas = [atsakymas, '7'];
-        case 8
-            atsakymas = [atsakymas, '8'];
-        case 9
-            atsakymas = [atsakymas, '9'];
-        case 10
             atsakymas = [atsakymas, '0'];
+        case 2
+            atsakymas = [atsakymas, '1'];
+        case 3
+            atsakymas = [atsakymas, '2'];
+        case 4
+            atsakymas = [atsakymas, '3'];
+        case 5
+            atsakymas = [atsakymas, '4'];
+        case 6
+            atsakymas = [atsakymas, '5'];
+        case 7
+            atsakymas = [atsakymas, '6'];
+        case 8
+            atsakymas = [atsakymas, '7'];
+        case 9
+            atsakymas = [atsakymas, '8'];
+        case 10
+            atsakymas = [atsakymas, '9'];
     end
 end
 % pateikime rezultatà komandiniame lange
 disp(atsakymas)
-figure(8), text(0.1,0.5,atsakymas,'FontSize',38), axis off
-%% Skaiciu "176" poşymiø iğskyrimas 
-pavadinimas = 'test_176.png';
+%figure(8), text(0.1,0.5,atsakymas,'FontSize',38), axis off
+%% Skaiciaus "3" poşymiø iğskyrimas 
+pavadinimas = 'test_3.png';
 V = imread(pavadinimas);
 V_pustonis = rgb2gray(V);
 imwrite(V_pustonis,'grey.png');
@@ -120,7 +120,7 @@ grey = imread('grey.png');
 BW = segmentImage(grey);
 imwrite(BW,'segmented.png');
 pavadinimas2 = 'segmented.png';
-pozymiai_patikrai = pozymiai_raidems_atpazinti(pavadinimas2, 3);
+pozymiai_patikrai = pozymiai_raidems_atpazinti(pavadinimas2, 5);
 
 %% Raidşiø atpaşinimas
 % poşymiai iğ celiø masyvo perkeliami á matricà
@@ -160,5 +160,4 @@ for k = 1:raidziu_sk
 end
 % pateikime rezultatà komandiniame lange
 disp(atsakymas)
-figure(9), text(0.1,0.5,atsakymas,'FontSize',38), axis off
-12345678905
+%figure(9), text(0.1,0.5,atsakymas,'FontSize',38), axis off
