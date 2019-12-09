@@ -1,37 +1,49 @@
 close all
 clear all
 clc
-%% raidşiø pavyzdşiø nuskaitymas ir poşymiø skaièiavimas
-pavadinimas = 'train_data_new.png';
+%% raidÃ¾iÃ¸ pavyzdÃ¾iÃ¸ nuskaitymas ir poÃ¾ymiÃ¸ skaiÃ¨iavimas
+pavadinimas = 'train_data_newer.png';
 V = imread(pavadinimas);
-%Pries paduodant funkcijai paveikslelis segmentuojamas
+%Pabandoma atpazinti skaicius su ocr funkcija
 V_pustonis = rgb2gray(V);
-imwrite(V_pustonis,'grey.png');
+BW = segmentImage(V_pustonis);
+Icorrected = imtophat(BW,strel('disk',60));
+marker = imerode(Icorrected, strel('line',10,0));
+Iclean = imreconstruct(marker, Icorrected);
+results = ocr(Iclean,'TextLayout','Block','CharacterSet','0123456789')
+%Atpazinti skaiciai suzymimi dezutemis
+regularExpr = '\d';
+bboxes = locateText(results,regularExpr,'UseRegexp',true);
+digits = regexp(results.Text,regularExpr,'match');
+Idigits = insertObjectAnnotation(V,'rectangle',bboxes,digits);
+imshow(Idigits);
+%Kadangi priklausomai nuo skaiciu isvaizdos, siuos ne visada atpazins teisingai (siuo atveju atpazinimo sekme 40%) todel atvaizdas padaromas tinklo mokymam
+imwrite(V_pustonis,'grey.png')
 grey = imread('grey.png');
 BW = segmentImage(grey);
-imwrite(BW,'segmented.png');
+imwrite(BW,'segmented.png')
 pavadinimas2 = 'segmented.png';
 pozymiai_tinklo_mokymui = pozymiai_raidems_atpazinti(pavadinimas2, 10);
-%% Atpaşintuvo kûrimas
-% poşymiai iğ celiø masyvo perkeliami á matricà
+%% AtpaÃ¾intuvo kÃ»rimas
+% poÃ¾ymiai iÃ° celiÃ¸ masyvo perkeliami Ã¡ matricÃ 
 P = cell2mat(pozymiai_tinklo_mokymui);
-% sukuriama teisingø atsakymø matrica: 11 raidşiø, 8 eilutës mokymui
+% sukuriama teisingÃ¸ atsakymÃ¸ matrica: 11 raidÃ¾iÃ¸, 8 eilutÃ«s mokymui
 %Pamodifikuojamas T kad butu vienodo didzio su P, nes kitaip newrb neveiks
 for_T = size(P);
 T = eye(for_T(1),for_T(2));
-% sukuriamas SBF tinklas duotiems P ir T sàryğiams
+% sukuriamas SBF tinklas duotiems P ir T sÃ ryÃ°iams
 tinklas = newrb(P,T,0,1,10); %pakeista i 10
 
 %% Tinklo patikra
-% skaièiuojamas tinklo iğëjimas neşinomiems poşymiams
+% skaiÃ¨iuojamas tinklo iÃ°Ã«jimas neÃ¾inomiems poÃ¾ymiams
 P2 = P(:,1:10);
 Y2 = sim(tinklas, P2);
-% ieğkoma, kuriame iğëjime gauta didşiausia reikğmë
+% ieÃ°koma, kuriame iÃ°Ã«jime gauta didÃ¾iausia reikÃ°mÃ«
 [a2, b2] = max(Y2);
 %% Rezultato atvaizdavimas
-% apskaièiuosime raidşiø skaièiø - poşymiø P2 stulpeliø skaièiø
+% apskaiÃ¨iuosime raidÃ¾iÃ¸ skaiÃ¨iÃ¸ - poÃ¾ymiÃ¸ P2 stulpeliÃ¸ skaiÃ¨iÃ¸
 raidziu_sk = size(P2,2);
-% rezultatà saugosime kintamajame 'atsakymas'
+% rezultatÃ  saugosime kintamajame 'atsakymas'
 atsakymas = [];
 for k = 1:raidziu_sk
     switch b2(k)
@@ -57,10 +69,10 @@ for k = 1:raidziu_sk
             atsakymas = [atsakymas, '9'];
     end
 end
-% pateikime rezultatà komandiniame lange
+% pateikime rezultatÃ  komandiniame lange
 disp(atsakymas)
 figure(7), text(0.1,0.5,atsakymas,'FontSize',38)
-%% Skaiciu "234" poşymiø iğskyrimas 
+%% Skaiciu "234" poÃ¾ymiÃ¸ iÃ°skyrimas 
 pavadinimas = 'test_27.png';
 V = imread(pavadinimas);
 V_pustonis = rgb2gray(V);
@@ -72,17 +84,17 @@ pavadinimas2 = 'segmented.png';
 imshow(pavadinimas2);
 pozymiai_patikrai = pozymiai_raidems_atpazinti(pavadinimas2, 7);
 
-%% Raidşiø atpaşinimas
-% poşymiai iğ celiø masyvo perkeliami á matricà
+%% RaidÃ¾iÃ¸ atpaÃ¾inimas
+% poÃ¾ymiai iÃ° celiÃ¸ masyvo perkeliami Ã¡ matricÃ 
 P2 = cell2mat(pozymiai_patikrai);
-% skaièiuojamas tinklo iğëjimas neşinomiems poşymiams
+% skaiÃ¨iuojamas tinklo iÃ°Ã«jimas neÃ¾inomiems poÃ¾ymiams
 Y2 = sim(tinklas, P2);
-% ieğkoma, kuriame iğëjime gauta didşiausia reikğmë
+% ieÃ°koma, kuriame iÃ°Ã«jime gauta didÃ¾iausia reikÃ°mÃ«
 [a2, b2] = max(Y2);
 %% Rezultato atvaizdavimas
-% apskaièiuosime raidşiø skaièiø - poşymiø P2 stulpeliø skaièiø
+% apskaiÃ¨iuosime raidÃ¾iÃ¸ skaiÃ¨iÃ¸ - poÃ¾ymiÃ¸ P2 stulpeliÃ¸ skaiÃ¨iÃ¸
 raidziu_sk = size(P2,2);
-% rezultatà saugosime kintamajame 'atsakymas'
+% rezultatÃ  saugosime kintamajame 'atsakymas'
 atsakymas = [];
 for k = 1:raidziu_sk
     switch b2(k)
@@ -108,10 +120,10 @@ for k = 1:raidziu_sk
             atsakymas = [atsakymas, '9'];
     end
 end
-% pateikime rezultatà komandiniame lange
+% pateikime rezultatÃ  komandiniame lange
 disp(atsakymas)
 %figure(8), text(0.1,0.5,atsakymas,'FontSize',38), axis off
-%% Skaiciaus "3" poşymiø iğskyrimas 
+%% Skaiciaus "3" poÃ¾ymiÃ¸ iÃ°skyrimas 
 pavadinimas = 'test_3.png';
 V = imread(pavadinimas);
 V_pustonis = rgb2gray(V);
@@ -122,17 +134,17 @@ imwrite(BW,'segmented.png');
 pavadinimas2 = 'segmented.png';
 pozymiai_patikrai = pozymiai_raidems_atpazinti(pavadinimas2, 5);
 
-%% Raidşiø atpaşinimas
-% poşymiai iğ celiø masyvo perkeliami á matricà
+%% RaidÃ¾iÃ¸ atpaÃ¾inimas
+% poÃ¾ymiai iÃ° celiÃ¸ masyvo perkeliami Ã¡ matricÃ 
 P2 = cell2mat(pozymiai_patikrai);
-% skaièiuojamas tinklo iğëjimas neşinomiems poşymiams
+% skaiÃ¨iuojamas tinklo iÃ°Ã«jimas neÃ¾inomiems poÃ¾ymiams
 Y2 = sim(tinklas, P2);
-% ieğkoma, kuriame iğëjime gauta didşiausia reikğmë
+% ieÃ°koma, kuriame iÃ°Ã«jime gauta didÃ¾iausia reikÃ°mÃ«
 [a2, b2] = max(Y2);
 %% Rezultato atvaizdavimas
-% apskaièiuosime raidşiø skaièiø - poşymiø P2 stulpeliø skaièiø
+% apskaiÃ¨iuosime raidÃ¾iÃ¸ skaiÃ¨iÃ¸ - poÃ¾ymiÃ¸ P2 stulpeliÃ¸ skaiÃ¨iÃ¸
 raidziu_sk = size(P2,2);
-% rezultatà saugosime kintamajame 'atsakymas'
+% rezultatÃ  saugosime kintamajame 'atsakymas'
 atsakymas = [];
 for k = 1:raidziu_sk
     switch b2(k)
@@ -158,6 +170,6 @@ for k = 1:raidziu_sk
             atsakymas = [atsakymas, '0'];
     end
 end
-% pateikime rezultatà komandiniame lange
+% pateikime rezultatÃ  komandiniame lange
 disp(atsakymas)
 %figure(9), text(0.1,0.5,atsakymas,'FontSize',38), axis off
